@@ -1,0 +1,30 @@
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  margin: -16px 0 30px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2edf1;
+}
+
+.app-topbar > div { display: grid; gap: 2px; }
+.app-topbar > div span { color: #91a5b3; font-size: 11px; font-weight: 700; }
+.app-topbar > div strong { color: #1d4564; font-size: 14px; }
+.app-topbar-profile { display: inline-flex; align-items: center; gap: 8px; color: #45647b; font-size: 12px; }
+.app-topbar-profile > span,
+.trip-owner-avatar { display: grid; place-items: center; overflow: hidden; border-radius: 50%; background: #d8f7f5; color: #079da7; font-weight: 800; }
+.app-topbar-profile > span { width: 32px; height: 32px; font-size: 11px; }
+.app-topbar-profile img,
+.trip-owner-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.experience-card { display: block; }
+.trip-owner { display: flex; align-items: center; gap: 8px; padding: 0 14px 14px; color: #7890a2; }
+.trip-owner-avatar { width: 26px; height: 26px; flex: none; font-size: 9px; }
+.trip-owner small { font-size: 10px; }
+.trip-owner b { color: #31526b; }
+
+@media (max-width: 560px) {
+  .app-topbar { margin-top: -6px; }
+  .app-topbar-profile b { display: none; }
+}

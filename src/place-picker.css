@@ -1,0 +1,13 @@
+.place-picker{position:relative;min-width:0}
+.place-input{display:flex;align-items:center;gap:6px;border:1px solid #d9e9ec;border-radius:8px;background:#fff;padding:0 4px 0 9px;color:#7690a1}
+.place-input .picked{color:#0cb8c0}
+.place-input input{flex:1;min-width:0;border:0!important;outline:0;padding:10px 0!important;background:transparent;box-shadow:none!important}
+.place-input button{flex:none;display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:6px;background:#e6f8f8;color:#087f88;cursor:pointer}
+.place-results{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);min-width:260px;max-height:280px;overflow:auto;background:#fff;border:1px solid #d9e9ec;border-radius:10px;box-shadow:0 12px 28px #0d657024;padding:4px}
+.place-results button{width:100%;display:flex;align-items:flex-start;gap:8px;text-align:left;border:0;background:transparent;padding:8px;border-radius:7px;color:#0cb8c0;cursor:pointer}
+.place-results button:hover{background:#f0fafa}
+.place-results span{flex:1;display:grid;gap:2px;min-width:0}
+.place-results strong{font-size:12px;color:#173a55}
+.place-results small{font-size:11px;color:#7690a1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.place-results em{font-style:normal;font-size:11px;color:#a77b14;display:flex;align-items:center;gap:2px}
+.place-message{display:block;margin-top:4px;font-size:11px;color:#7690a1}

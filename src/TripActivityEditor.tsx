@@ -1,0 +1,12 @@
+import { FormEvent, useState } from 'react';
+import { Check, X } from 'lucide-react';
+import { api, apiError } from './api';
+import { PlacePicker, placeFields } from './PlacePicker';
+import type { Activity, Trip } from './types';
+import './activity-editor.css';
+
+export function TripActivityEditor({ trip, activity, onSaved, onCancel }: { trip: Trip; activity: Activity; onSaved: (activity: Activity) => void; onCancel: () => void }) {
+  const [error, setError] = useState(''); const [saving, setSaving] = useState(false);
+  const save = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const form = new FormData(event.currentTarget); setSaving(true); setError(''); try { const updated = await api.updateActivity(String(trip.id), activity.id, { name: form.get('name'), dayNumber: Number(form.get('dayNumber')), startTime: form.get('startTime'), endTime: form.get('endTime'), ...placeFields(form), transportation: form.get('transportation'), expense: Number(form.get('expense')) || 0 }); onSaved(updated); } catch (cause) { setError(apiError(cause, 'Unable to update this activity.')); } finally { setSaving(false); } };
+  return <form className="activity-edit-form" onSubmit={save}><input name="name" required defaultValue={activity.name}/><input name="dayNumber" type="number" min="1" max={trip.durationDays} required defaultValue={activity.dayNumber}/><input name="startTime" type="time" required defaultValue={activity.startTime.slice(0, 5)}/><input name="endTime" type="time" required defaultValue={activity.endTime.slice(0, 5)}/><PlacePicker required allowMapPin near={trip.cityPlaceId} mapCenter={trip.cityLatitude != null && trip.cityLongitude != null ? { lat: Number(trip.cityLatitude), lng: Number(trip.cityLongitude) } : null} placeholder="Search and choose the place" initialPlace={{ placeId: activity.placeId, name: activity.placeName, latitude: activity.placeLatitude, longitude: activity.placeLongitude }}/><select name="transportation" defaultValue={activity.transportation || 'walk'}><option value="walk">Walk</option><option value="public_transport">Public transport</option><option value="drive">Drive</option></select><input name="expense" type="number" min="0" step="0.01" defaultValue={activity.expense || ''} placeholder="Cost €"/><button className="primary compact" disabled={saving}><Check size={15}/>{saving ? 'Saving…' : 'Save'}</button><button type="button" className="icon-button" onClick={onCancel} aria-label="Cancel"><X size={15}/></button>{error && <p className="error">{error}</p>}</form>;
+}

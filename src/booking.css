@@ -1,0 +1,98 @@
+.booking-panel{margin:26px 0;background:#fff;border:1px solid #e0edf0;border-radius:14px;padding:20px}
+.booking-page{max-width:1180px;margin:0 auto}.booking-page>.text-link{display:inline-flex;align-items:center;gap:3px;margin:4px 0 0}.booking-page .booking-panel{margin-top:14px}
+.booking-page-heading{margin:4px 0 20px}.booking-page-heading h1{margin:4px 0}.travel-booking-page .booking-panel h2{display:flex;align-items:center;gap:8px;color:#173a55}.esim-search{display:flex;align-items:end;gap:10px}.esim-search label{display:grid;gap:5px;flex:1;max-width:340px;font-size:11px;font-weight:700;color:#557088}.esim-search input{padding:9px 10px;border:1px solid #d9e9ec;border-radius:8px;font-size:13px}.esim-search .primary{display:inline-flex;align-items:center;gap:6px}@media(max-width:600px){.esim-search{align-items:stretch;flex-direction:column}.esim-search label{max-width:none}}
+.booking-panel h2{margin:2px 0 0}
+.booking-carousel{position:relative;height:240px;border-radius:12px;overflow:hidden;margin:14px 0 18px;background:#e6f6f7}
+.booking-carousel img{width:100%;height:100%;object-fit:cover;display:block}
+.carousel-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#ffffffe6;color:#173a55;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 10px #0d657030}
+.carousel-nav.prev{left:10px}.carousel-nav.next{right:10px}
+.carousel-dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:6px}
+.carousel-dots button{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#ffffff99;cursor:pointer}
+.carousel-dots button.active{background:#fff;width:18px;border-radius:999px}
+.photo-credit{position:absolute;right:8px;bottom:8px;background:#0f1b26a6;color:#fff;font-size:10px;padding:3px 7px;border-radius:6px}
+.photo-credit a{color:#fff;text-decoration:underline}
+.flight-form{display:grid;grid-template-columns:1.3fr 1.3fr .9fr .9fr .6fr auto;gap:10px;align-items:end}
+.flight-form label{display:grid;gap:5px;font-size:11px;font-weight:700;color:#557088}
+.flight-form input{padding:9px 10px;border:1px solid #d9e9ec;border-radius:8px;font-size:13px;min-width:0}
+.flight-form .primary{height:38px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.airport-picker{position:relative}
+.airport-input{display:flex;align-items:center;gap:6px;border:1px solid #d9e9ec;border-radius:8px;background:#fff;padding:0 8px;color:#7690a1}
+.airport-input input{border:0!important;padding:9px 0!important;flex:1;outline:0}
+.airport-results{position:absolute;z-index:20;top:calc(100% + 4px);left:0;right:0;min-width:280px;max-height:300px;overflow:auto;background:#fff;border:1px solid #d9e9ec;border-radius:10px;box-shadow:0 12px 28px #0d657024;padding:4px;display:grid}
+.airport-results button{display:flex;gap:8px;align-items:flex-start;text-align:left;border:0;background:transparent;border-radius:7px;padding:8px;color:#0cb8c0;cursor:pointer}
+.airport-results button:hover{background:#f0fafa}
+.airport-results span{display:grid;gap:2px}
+.airport-results strong{font-size:12px;color:#173a55}
+.airport-results em{font-style:normal;color:#087f88;font-weight:800;margin-left:4px}
+.airport-results small{font-size:11px;color:#7690a1;font-weight:500}
+.flight-results{margin-top:16px}
+.flight-results-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;color:#173a55}
+.flight-results-head a{display:inline-flex;align-items:center;gap:4px;font-size:12px}
+.flight-message{margin:0 0 10px;padding:8px 11px;border-radius:8px;background:#fff8ec;border:1px solid #f4dcb0;color:#7a5a24;font-size:12px}
+.flight-message.info{background:#eef8ff;border-color:#cfe5f7;color:#24557a}
+.offer-list{display:grid;gap:10px}
+.offer-card{display:grid;grid-template-columns:180px 1fr auto;gap:16px;align-items:center;border:1px solid #e3edf0;border-radius:12px;padding:12px 14px}
+.offer-card.cheapest{border-color:#0cb8c0;box-shadow:0 0 0 2px #0cb8c01f}
+.offer-airline{display:flex;gap:10px;align-items:center}
+.offer-airline img{border-radius:8px;background:#f4f8f9;object-fit:contain}
+.offer-airline div{display:grid}
+.offer-airline strong{font-size:13px;color:#173a55}
+.offer-airline small{font-size:11px;color:#7690a1}
+.offer-legs{display:grid;gap:6px}
+.offer-leg{display:flex;gap:10px;align-items:center}
+.offer-leg>span:last-child{display:grid}
+.offer-leg b{font-size:13px;color:#173a55}
+.offer-leg small{font-size:11px;color:#7690a1}
+.leg-label{font-size:10px;font-weight:800;text-transform:uppercase;color:#087f88;background:#e6f8f8;border-radius:5px;padding:2px 6px;min-width:38px;text-align:center}
+.offer-price{display:grid;justify-items:end;gap:3px}
+.offer-price b{font-size:20px;color:#173a55}
+.offer-price small{font-size:11px;color:#7690a1}
+.offer-price .primary{display:inline-flex;align-items:center;gap:5px;margin-top:4px}
+.offer-price .badge{font-size:10px;font-weight:800;color:#fff;background:#0cb8c0;border-radius:999px;padding:2px 8px}
+.esim-block{margin-top:22px}
+.esim-block h3{display:flex;align-items:center;gap:8px;color:#173a55;margin:0 0 10px}
+.esim-block .flag{border-radius:3px;box-shadow:0 0 0 1px #0001}
+.esim-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.esim-card{border:1px solid #e3edf0;border-radius:12px;padding:14px;display:grid;gap:8px}
+.esim-card header{display:flex;gap:10px;align-items:center}
+.esim-card header img{border-radius:7px}
+.esim-card header div{display:grid}
+.esim-card strong{font-size:13px;color:#173a55}
+.esim-card small{font-size:11px;color:#7690a1}
+.esim-card p{margin:0;font-size:12px;color:#557088;line-height:1.5}
+.esim-card ul{margin:0;padding-left:18px;font-size:12px;color:#36536a;display:grid;gap:2px}
+.esim-card a{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800}
+.booking-note{display:block;margin-top:14px;font-size:11px;color:#9ab0bd}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1000px){.flight-form{grid-template-columns:1fr 1fr}.offer-card{grid-template-columns:1fr}.offer-price{justify-items:start}}
+@media(max-width:600px){.flight-form,.esim-grid{grid-template-columns:1fr}}
+
+.booking-sub{margin:4px 0 0;font-size:12px}
+.booking-title{display:flex;align-items:center;gap:8px;color:#173a55;margin:22px 0 10px;font-size:15px}
+.travellers-flights{display:grid;gap:10px}
+.travellers-flights .booking-title{margin-top:4px}
+.traveller-group{border:1px solid #e3edf0;border-radius:12px;padding:12px 14px;display:grid;gap:8px}
+.traveller-group header{display:flex;align-items:center;gap:10px}
+.traveller-group header>div:nth-child(2){display:grid;flex:1}
+.traveller-group header strong{font-size:13px;color:#173a55}
+.traveller-group header small{font-size:11px;color:#7690a1}
+.traveller-group header a{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800}
+.avatars{display:flex}
+.avatars img,.avatars span{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-left:-8px;object-fit:cover;background:#dcf8f7;color:#079aa3;display:grid;place-items:center;font-size:10px;font-weight:800}
+.avatars>:first-child{margin-left:0}
+.offer-list.compact .offer-card{padding:9px 12px}
+.offer-list.compact .offer-price b{font-size:17px}
+.home-airport-prompt{display:grid;grid-template-columns:auto 1fr minmax(220px,320px);gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:#effbfb;border:1px solid #bfeaec;color:#21506a;font-size:12.5px}
+.home-airport-prompt>svg{color:#0cb8c0}
+.traveller-note{display:flex;align-items:center;gap:6px;font-size:12px;margin:0}
+.esim-plans{display:grid;border:1px solid #e3edf0;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.esim-plan{display:grid;grid-template-columns:2fr 1fr .8fr 1.3fr auto;gap:10px;align-items:center;padding:9px 12px;border-top:1px solid #edf3f4;font-size:12.5px;color:#36536a}
+.esim-plan:first-child{border-top:0}
+.esim-plan.head{background:#f4fafb;font-size:10.5px;font-weight:800;text-transform:uppercase;color:#7690a1}
+.esim-plan>span{display:grid;gap:1px}
+.esim-plan b{color:#173a55}
+.esim-plan small{font-size:10.5px;color:#7690a1}
+.esim-plan .plan-source.airalo_api{color:#13866a;font-weight:700}
+.esim-plan a{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:800}
+@media(max-width:700px){.home-airport-prompt{grid-template-columns:1fr}.esim-plan{grid-template-columns:1fr 1fr}.esim-plan.head{display:none}}

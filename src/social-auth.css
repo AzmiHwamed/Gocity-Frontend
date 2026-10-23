@@ -1,0 +1,24 @@
+.auth-card { display:flex; flex-direction:column; }
+.auth-email-form { order:2; }
+.social-auth { border-top:1px solid #e3edef; margin:22px 0 18px; order:3; padding-top:18px; text-align:center; }
+.auth-card > .forgot-link { order:4; }
+.auth-card > .auth-switch { order:5; }
+.auth-card > .legal-links { order:6; }
+.social-auth::before { content:none; }
+.social-auth > div { align-items:center; color:#8295a3; display:flex; font-size:11px; gap:9px; margin:12px 0; }
+.social-auth > div span { background:#e0eaed; flex:1; height:1px; }
+.social-auth button { align-items:center; background:#fff; border:1px solid #d6e3e8; border-radius:9px; color:#183953; cursor:pointer; display:flex; font-size:13px; font-weight:800; justify-content:center; margin:8px 0; min-height:44px; transition:background .18s,box-shadow .18s,transform .18s; width:100%; }
+.social-auth button::before { align-items:center; border-radius:50%; display:inline-flex; font-size:15px; font-weight:900; height:22px; justify-content:center; margin-right:9px; width:22px; }
+.social-auth button:nth-of-type(1)::before { color:#4285f4; content:'G'; }
+.social-auth button:nth-of-type(2)::before { background:#1877f2; color:#fff; content:'f'; font-family:Arial,sans-serif; }
+.social-auth button:hover { background:#f6fbfc; box-shadow:0 6px 16px #0b587c18; transform:translateY(-1px); }
+.social-auth button:disabled { cursor:wait; opacity:.65; transform:none; }
+.social-auth .social-consent { align-items:flex-start; background:#f2f8f9; border-radius:8px; color:#526e80; display:flex; font-size:11px; gap:8px; line-height:1.45; margin:0 0 12px; padding:9px 10px; text-align:left; }
+.social-auth .social-consent input { accent-color:#0a9ba4; flex:0 0 auto; height:14px; margin:2px 0 0; padding:0; width:14px; }
+.social-auth .social-consent a { color:#087f89; font-weight:800; }
+.auth-card { backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.7); box-shadow:0 28px 75px #03204061; }
+.auth-card .eyebrow { color:#079aa3; font-size:10px; font-weight:900; letter-spacing:1.25px; }
+.auth-card .muted { color:#698397; line-height:1.55; }
+.auth-card input { transition:border-color .18s,box-shadow .18s; }
+.auth-card input:focus { border-color:#0bb0b9; box-shadow:0 0 0 4px #0bb0b91a; }
+.auth-card .primary { box-shadow:0 10px 20px #078d9b2e; min-height:46px; }

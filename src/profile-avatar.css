@@ -1,0 +1,69 @@
+.big-avatar,
+.avatar {
+  overflow: hidden;
+}
+
+.big-avatar img,
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-image-field {
+  grid-column: 1 / -1;
+}
+
+.profile-image-field small {
+  color: #7890a2;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.profile-form textarea {
+  min-height: 88px;
+  resize: vertical;
+  border: 1px solid #dce9ed;
+  border-radius: 8px;
+  background: #fbfdfe;
+  padding: 11px;
+  outline-color: #0cb8c0;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid #dfedf0;
+}
+
+.profile-stats div { padding: 15px; text-align: center; border-right: 1px solid #dfedf0; }
+.profile-stats div:last-child { border-right: 0; }
+.profile-stats b { display: block; color: #174967; font-size: 17px; }
+.profile-stats small { color: #91a5b3; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.profile-about, .profile-interests { grid-column: 1 / -1; }
+.profile-interests p { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.profile-interests span { background: #e7fafa; border-radius: 999px; color: #0b838b; font-size: 11px; font-weight: 700; padding: 5px 9px; }
+
+.profile-interests-picker {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.profile-interests-picker legend { width: 100%; margin-bottom: 2px; color: #274966; font-size: 12px; font-weight: 800; }
+.profile-interests-picker label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #d5eaed; border-radius: 999px; padding: 7px 10px; color: #42627b; font-size: 11px; font-weight: 700; }
+.profile-interests-picker input { accent-color: #0cb8c0; }
+
+.interest-admin { margin-top: 22px; padding: 22px; border: 1px solid #dfedf0; border-radius: 14px; background: #fff; }
+.interest-admin h2 { margin: 0 0 14px; color: #1d4564; font-size: 18px; }
+.interest-admin form { display: flex; gap: 8px; }
+.interest-admin input { flex: 1; border: 1px solid #dce9ed; border-radius: 8px; padding: 10px; outline-color: #0cb8c0; }
+.interest-admin > div { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+.interest-admin > div span { display: inline-flex; align-items: center; gap: 6px; background: #effafa; border-radius: 999px; padding: 6px 8px 6px 10px; color: #31526b; font-size: 11px; font-weight: 700; }
+.interest-admin button:not(.primary) { background: transparent; color: #0b9fa8; font-size: 10px; font-weight: 800; }

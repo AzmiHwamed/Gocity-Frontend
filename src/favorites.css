@@ -1,0 +1,50 @@
+/* Heart button */
+.fav-wrap{display:inline-flex;flex-direction:column;gap:5px}
+.fav-button{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:#7690a1;box-shadow:0 3px 12px #0d65702b;cursor:pointer;transition:transform .15s,color .15s,background .15s}
+.fav-button:hover{color:#e0457b;transform:scale(1.06)}
+.fav-button.on{color:#e0457b}
+.fav-button[data-busy]{opacity:.75}
+.fav-button.with-label{width:100%;height:auto;display:flex;justify-content:center;gap:7px;border-radius:8px;padding:11px 14px;font-size:12px;font-weight:800;box-shadow:none;border:1px solid #75cfd2;background:transparent;color:#c9fbfa}
+.fav-button.with-label.on{background:#ffffff14;color:#ff9fc0;border-color:#ff9fc0}
+.fav-button.with-label:hover{transform:none}
+.fav-error{font-size:11px;color:#ffb4b4}
+.fav-inline .fav-button{width:26px;height:26px;box-shadow:none;background:transparent}
+.fav-inline .fav-button svg{width:15px;height:15px}
+
+/* Cards with a heart in the corner */
+.card-with-fav{position:relative}
+.card-with-fav>.fav-wrap{position:absolute;top:12px;right:12px;z-index:2}
+.hotel-photo{position:relative}
+.hotel-photo>.fav-wrap{position:absolute;top:8px;right:8px}
+
+/* Favorites page */
+.favorites-page{max-width:1080px}
+.fav-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 22px}
+.fav-tabs button{display:flex;align-items:center;gap:7px;border:1px solid #d9e9ec;background:#fff;color:#4c6b80;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer}
+.fav-tabs button b{min-width:20px;padding:1px 6px;border-radius:999px;background:#eef6f7;color:#4c6b80;font-size:10px;text-align:center}
+.fav-tabs button.active{background:#0cb8c0;border-color:#0cb8c0;color:#fff}
+.fav-tabs button.active b{background:#ffffff33;color:#fff}
+.fav-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.fav-card{background:#fff;border:1px solid #e0edf0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.fav-image{height:140px;background:#e6f6f7 center/cover;display:grid;place-items:center;color:#5fb9bf;position:relative}
+.fav-type{position:absolute;left:10px;top:10px;display:flex;align-items:center;gap:4px;background:#fff;color:#087f88;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800;box-shadow:0 2px 8px #0d65701f}
+.fav-body{padding:13px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.fav-body h3{margin:0;font-size:15px;color:#173a55;letter-spacing:-.2px}
+.fav-body small{font-size:11px;color:#7690a1;line-height:1.5}
+.fav-actions{margin-top:auto;padding-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px}
+.fav-actions a{display:flex;align-items:center;gap:4px;font-weight:800;color:#08a8b1}
+.fav-actions button{display:flex;align-items:center;gap:4px;border:0;background:transparent;color:#9a6a7c;font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;margin-left:auto}
+.fav-actions button:hover{color:#d0306a}
+.fav-card.unavailable{background:#f8fbfb}
+.fav-card.unavailable .fav-image{background:#eef2f3;color:#a9b9c2}
+.fav-card.unavailable h3{color:#7f95a4}
+.fav-gone{color:#a86b3c!important}
+@media(max-width:900px){.fav-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.fav-grid{grid-template-columns:1fr}}
+
+/* Experience detail placements */
+.save-experience-fav{display:flex;width:100%;margin:0 0 9px}
+.fav-end{margin-left:auto;align-self:center}
+.fav-on-dark{vertical-align:middle;margin:0 2px 0 4px}
+.fav-on-dark .fav-button{color:#ffffffcc}
+.fav-on-dark .fav-button.on{color:#ff9fc0}
