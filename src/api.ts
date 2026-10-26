@@ -60,6 +60,13 @@ export const api = {
   verifyOtp: (email: string, otp: string) => body<{ resetToken: string; expiresIn: number }>(client.post('/auth/verify-otp', { email, otp })),
   resetPassword: (resetToken: string, newPassword: string) => body<{ message: string }>(client.post('/auth/reset-password', { resetToken, newPassword })),
   publicTrips: (params: { q?: string; cityPlaceId?: string; from?: string; to?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public', { params })),
+  adminOverview: () => body<{ users: number; travellers: number; agencies: number; admins: number; trips: number; publicTrips: number }>(client.get('/users/admin/overview')),
+  adminUsers: (params: { page?: number; limit?: number; search?: string; role?: string } = {}) => body<User[] | { items: User[] }>(client.get('/users', { params })),
+  adminTrips: (params: { page?: number; limit?: number } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/users/admin/trips', { params })),
+  adminUpdateUser: (id: number, input: Partial<Pick<User, 'isActive' | 'role'>>) => body<User>(client.patch(`/users/${id}`, input)),
+  forYouTrips: (params: { q?: string; cityPlaceId?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public/for-you', { params })),
+  cityBreakTrips: (params: { city?: string; cityPlaceId?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public/city-breaks', { params })),
+  agencyTrips: (params: { q?: string; cityPlaceId?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public/agencies', { params })),
   // Google Places through the backend
   searchCities: (q: string, sessionToken?: string) => body<CitySuggestion[]>(client.get('/places/cities/search', { params: { q, sessionToken } })),
   tripRoute: (tripId: string, day: number, includeHotel = false) => body<DayRoute>(client.get(`/trips/${tripId}/route`, { params: { day, includeHotel } })),
