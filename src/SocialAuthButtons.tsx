@@ -6,7 +6,7 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { api, saveSession } from './api';
 import type { User } from './types';
 import './social-auth.css';
@@ -19,17 +19,17 @@ const firebaseConfig = {
 };
 const enabled = Object.values(firebaseConfig).every(Boolean);
 
-export function SocialAuthButtons({ setUser }: { setUser: (user: User) => void }) {
+/** Uses the sign-in form's own terms checkbox (passed as acceptTerms), so the page shows a single box. */
+export function SocialAuthButtons({ setUser, acceptTerms }: { setUser: (user: User) => void; acceptTerms: boolean }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [busy, setBusy] = useState<'google' | 'facebook' | null>(null);
-  const [acceptTerms, setAcceptTerms] = useState(false);
   if (!enabled || !['/login', '/register'].includes(location.pathname)) return null;
 
   const signIn = async (providerName: 'google' | 'facebook') => {
     if (!acceptTerms) {
-      setError('Please accept the Terms of Use and Privacy Policy before continuing.');
+      setError('Tick “I agree to the Terms of Use and the Privacy Policy” above before continuing.');
       return;
     }
     setBusy(providerName); setError('');
@@ -44,5 +44,5 @@ export function SocialAuthButtons({ setUser }: { setUser: (user: User) => void }
     } finally { setBusy(null); }
   };
 
-  return <div className="social-auth"><div><span/>or continue with<span/></div><label className="social-consent"><input type="checkbox" checked={acceptTerms} onChange={(event) => setAcceptTerms(event.target.checked)}/><span>I agree to the <Link to="/terms" target="_blank">Terms of Use</Link> and <Link to="/privacy" target="_blank">Privacy Policy</Link> if this creates my account.</span></label><button type="button" onClick={() => signIn('google')} disabled={!!busy}>{busy === 'google' ? 'Connecting…' : 'Continue with Google'}</button><button type="button" onClick={() => signIn('facebook')} disabled={!!busy}>{busy === 'facebook' ? 'Connecting…' : 'Continue with Facebook'}</button>{error && <p className="error">{error}</p>}</div>;
+  return <div className="social-auth"><div><span/>or continue with<span/></div><button type="button" onClick={() => signIn('google')} disabled={!!busy}>{busy === 'google' ? 'Connecting…' : 'Continue with Google'}</button><button type="button" onClick={() => signIn('facebook')} disabled={!!busy}>{busy === 'facebook' ? 'Connecting…' : 'Continue with Facebook'}</button>{error && <p className="error">{error}</p>}</div>;
 }

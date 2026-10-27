@@ -92,7 +92,7 @@ function TravellersFlights({ tripId, reloadKey, onPickMine, message }: { tripId:
   </div>;
 }
 
-function Esims({ esims }: { esims: EsimList }) {
+export function Esims({ esims }: { esims: EsimList }) {
   const checked = (iso: string) => new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' });
   return <div className="esim-block">
     <h3 className="booking-title"><Smartphone size={17}/> Stay connected{esims.country ? <> in {esims.country.name} <img className="flag" src={esims.country.flagUrl} alt="" width={22} height={16}/></> : ''}</h3>
@@ -111,7 +111,7 @@ function Esims({ esims }: { esims: EsimList }) {
   </div>;
 }
 
-function FlightResults({ result }: { result: FlightPrices }) {
+export function FlightResults({ result }: { result: FlightPrices }) {
   const from = result.route.origin; const to = result.route.destination;
   return <div className="flight-results">
     <div className="flight-results-head"><strong>{from?.cityName || from?.name || result.route.originCode} → {to?.cityName || to?.name || result.route.destinationCode}</strong><a className="text-link" href={result.searchUrl} target="_blank" rel="noreferrer sponsored">All flights on {result.provider.name.split(' /')[0]} <ExternalLink size={13}/></a></div>
@@ -136,7 +136,7 @@ function Leg({ label, at, from, to, minutes, stops }: { label: string; at: strin
 }
 
 /** City or airport autocomplete (Travelpayouts via the backend). */
-function AirportPicker({ label, icon, value, onChange, placeholder }: { label: string; icon: ReactNode; value: FlightPlace | null; onChange: (p: FlightPlace | null) => void; placeholder: string }) {
+export function AirportPicker({ label, icon, value, onChange, placeholder }: { label: string; icon: ReactNode; value: FlightPlace | null; onChange: (p: FlightPlace | null) => void; placeholder: string }) {
   const [text, setText] = useState(value ? placeLabel(value) : ''); const [results, setResults] = useState<FlightPlace[]>([]); const [open, setOpen] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => { setText(value ? placeLabel(value) : ''); }, [value]);

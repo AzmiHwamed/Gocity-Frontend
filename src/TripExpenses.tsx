@@ -16,7 +16,10 @@ const errorText = (e: any, fallback: string) => e?.response?.data?.response_erro
 export function TripExpenses({ trip, members, editable, refreshKey = 0 }: { trip: Trip; members: Member[]; editable: boolean; refreshKey?: number }) {
   const tripId = String(trip.id);
   const [expenses, setExpenses] = useState<Expense[]>([]); const [summary, setSummary] = useState<ExpenseSummary | null>(null); const [adding, setAdding] = useState(false); const [editing, setEditing] = useState<number | null>(null); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
-  const currency = summary?.currencies.length === 1 ? summary.currencies[0] : 'EUR';
+  // Totals are in the trip's currency; expenses in other currencies are listed apart (never converted).
+  const [tripCurrency, setTripCurrency] = useState(trip.currency ?? 'EUR');
+  const currency = summary?.currency ?? tripCurrency;
+  const changeCurrency = async (next: string) => { setTripCurrency(next); try { await api.updateTrip(tripId, { currency: next }); await refresh(); } catch (e) { setError(errorText(e, 'Could not change the currency.')); } };
   const money = (amount: number) => new Intl.NumberFormat('en', { style: 'currency', currency, maximumFractionDigits: 2 }).format(amount || 0);
   const refresh = () => Promise.all([api.expenses(tripId).then(setExpenses), api.expenseSummary(tripId).then(setSummary)]).catch((e) => setError(errorText(e, 'Unable to load expenses.')));
   useEffect(() => { refresh(); }, [tripId, refreshKey]);
@@ -33,7 +36,8 @@ export function TripExpenses({ trip, members, editable, refreshKey = 0 }: { trip
     <p className="eyebrow">GROUP BUDGET</p><h2>Spend, at a glance.</h2>
     {summary && <><div className="budget-grid"><div><small>Total spent</small><strong>{money(summary.total)}</strong><small>{money(summary.activitiesTotal)} activities · {money(summary.expensesTotal)} other expenses</small></div><div><small>Per person ({summary.travelersCount})</small><strong>{money(summary.perPerson)}</strong></div><div><small>Budget left</small><strong className={summary.remainingBudget != null && summary.remainingBudget < 0 ? 'over' : ''}>{summary.remainingBudget == null ? 'No budget set' : money(summary.remainingBudget)}</strong>{summary.budgetTotal != null && <small>of {money(summary.budgetTotal)}</small>}</div></div>
       <div className="expense-breakdown"><div><h3>By category</h3>{summary.byCategory.filter((c) => c.total > 0).map((c) => <div className="bar-row" key={c.category}><span>{label(c.category)}</span><div className="bar"><i style={{ width: `${(c.total / max) * 100}%` }}/></div><b>{money(c.total)}</b></div>)}{!summary.byCategory.some((c) => c.total > 0) && <p className="muted">Nothing spent yet.</p>}</div><div><h3>Who paid</h3>{summary.byPayer.length ? summary.byPayer.map((p) => <div className="payer" key={p.userId ?? 'none'}><span>{p.name}</span><b>{money(p.total)}</b></div>) : <p className="muted">Add who paid to see the split.</p>}</div></div>
-      {summary.currencies.length > 1 && <p className="muted">Several currencies are used ({summary.currencies.join(', ')}); totals add them up without converting.</p>}</>}
+      {!!summary.otherCurrencies?.length && <p className="muted other-currencies">Not included in the totals above (other currencies, not converted): {summary.otherCurrencies.map((o) => new Intl.NumberFormat('en', { style: 'currency', currency: o.currency }).format(o.total)).join(' · ')}</p>}
+      {editable && <label className="trip-currency">Trip currency<select value={currency} onChange={(e) => changeCurrency(e.target.value)}>{['EUR', 'USD', 'GBP', 'TND', 'MAD', 'TRY', 'CHF', 'CAD', 'AED'].map((c) => <option key={c}>{c}</option>)}</select><small>Budget, activity costs and totals use this currency.</small></label>}</>}
     {error && <p className="error">{error}</p>}
     <div className="section-head expense-head"><h3>Expenses</h3>{editable && !adding && <button className="primary compact" onClick={() => setAdding(true)}><Plus size={16}/> Add expense</button>}</div>
     {adding && <form className="expense-form" onSubmit={add}>{fields()}<button className="primary compact" disabled={busy}><Check size={15}/> Add</button><button type="button" className="icon-button" onClick={() => setAdding(false)} aria-label="Cancel"><X size={15}/></button></form>}

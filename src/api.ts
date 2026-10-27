@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AppNotification, AuthResult, CitySuggestion, DayRoute, Envelope, EsimList, Expense, ExpenseSummary, Favorite, FlightPlace, FlightPrices, TripBooking, TripFlights, PlaceDetails, FavoritePage, FavoriteType, GalleryItem, HotelPage, LegalDocument, LegalKind, LegalStatus, LegalVersion, PlaceResult, Interest, OrganizationAnalytics, OrganizationProgram, Trip, TripMessage, User } from './types';
+import type { AdminEsimPlan, AdminOverview, Paged, AppNotification, AuthResult, CitySuggestion, DayRoute, Envelope, EsimList, Expense, ExpenseSummary, Favorite, FlightPlace, FlightPrices, TripBooking, TripFlights, PlaceDetails, FavoritePage, FavoriteType, GalleryItem, HotelPage, LegalDocument, LegalKind, LegalStatus, LegalVersion, PlaceResult, Interest, OrganizationAnalytics, OrganizationProgram, Trip, TripMessage, User } from './types';
 
 // .env.example names it VITE_API_BASE_URL; accept both.
 const client = axios.create({ baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1' });
@@ -40,7 +40,7 @@ export const apiError = (error: unknown, fallback = 'Something went wrong. Pleas
   return Array.isArray(message) ? message.join('; ') : message || fallback;
 };
 export const api = {
-  login: (email: string, password: string) => body<AuthResult>(client.post('/auth/login', { email, password })),
+  login: (email: string, password: string, acceptTerms = false) => body<AuthResult>(client.post('/auth/login', { email, password, acceptTerms })),
   oauthLogin: (provider: 'google' | 'facebook', firebaseIdToken: string, acceptTerms = false) => body<AuthResult>(client.post('/auth/oauth/login', { provider, firebaseIdToken, acceptTerms })),
   register: (input: Record<string, string | boolean>) => body<{ message: string }>(client.post('/auth/register', input)),
   registerOrganization: (input: Record<string, string | boolean>) => body<{ message: string }>(client.post('/auth/register-organization', input)),
@@ -60,10 +60,19 @@ export const api = {
   verifyOtp: (email: string, otp: string) => body<{ resetToken: string; expiresIn: number }>(client.post('/auth/verify-otp', { email, otp })),
   resetPassword: (resetToken: string, newPassword: string) => body<{ message: string }>(client.post('/auth/reset-password', { resetToken, newPassword })),
   publicTrips: (params: { q?: string; cityPlaceId?: string; from?: string; to?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public', { params })),
-  adminOverview: () => body<{ users: number; travellers: number; agencies: number; admins: number; trips: number; publicTrips: number }>(client.get('/users/admin/overview')),
-  adminUsers: (params: { page?: number; limit?: number; search?: string; role?: string } = {}) => body<User[] | { items: User[] }>(client.get('/users', { params })),
-  adminTrips: (params: { page?: number; limit?: number } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/users/admin/trips', { params })),
-  adminUpdateUser: (id: number, input: Partial<Pick<User, 'isActive' | 'role'>>) => body<User>(client.patch(`/users/${id}`, input)),
+  adminOverview: () => body<AdminOverview>(client.get('/users/admin/overview')),
+  adminUsers: (params: { page?: number; limit?: number; search?: string; role?: string } = {}) => body<Paged<User>>(client.get('/users', { params })),
+  adminTrips: (params: { page?: number; limit?: number; search?: string; visibility?: string } = {}) => body<Paged<Trip>>(client.get('/users/admin/trips', { params })),
+  adminCreateUser: (input: Record<string, string>) => body<User>(client.post('/users', input)),
+  adminDeleteUser: (id: number) => body<void>(client.delete(`/users/${id}`)),
+  adminPrograms: () => body<OrganizationProgram[]>(client.get('/admin/programs')),
+  adminSetProgramPublished: (id: number, isPublished: boolean) => body<OrganizationProgram>(client.patch(`/admin/programs/${id}/publish`, { isPublished })),
+  adminDeleteProgram: (id: number) => body<void>(client.delete(`/admin/programs/${id}`)),
+  adminEsimPlans: (country?: string) => body<AdminEsimPlan[]>(client.get('/booking/esims/plans', { params: country ? { country } : undefined })),
+  adminCreateEsimPlan: (input: Record<string, unknown>) => body<AdminEsimPlan>(client.post('/booking/esims/plans', input)),
+  adminUpdateEsimPlan: (id: number, input: Record<string, unknown>) => body<AdminEsimPlan>(client.patch(`/booking/esims/plans/${id}`, input)),
+  adminDeleteEsimPlan: (id: number) => body<void>(client.delete(`/booking/esims/plans/${id}`)),
+  adminUpdateUser: (id: number, input: Partial<Pick<User, 'isActive' | 'role' | 'organizationName'>>) => body<User>(client.patch(`/users/${id}`, input)),
   forYouTrips: (params: { q?: string; cityPlaceId?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public/for-you', { params })),
   cityBreakTrips: (params: { city?: string; cityPlaceId?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public/city-breaks', { params })),
   agencyTrips: (params: { q?: string; cityPlaceId?: string; sort?: 'newest' | 'start_date' } = {}) => body<Trip[] | { items: Trip[] }>(client.get('/trips/public/agencies', { params })),

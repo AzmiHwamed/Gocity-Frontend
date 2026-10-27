@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { ArrowLeft, Ban, CalendarDays, Check, ChevronLeft, ChevronRight, Clock3, Copy, ExternalLink, Gauge, Languages, MapPin, Package, Pencil, ShieldCheck, Sparkles, Tag, Users, X } from 'lucide-react';
 import { api, apiError, assetUrl } from './api';
 import { FavoriteButton, useFavoriteIds } from './Favorites';
@@ -45,7 +45,8 @@ function AddToPlan({ program }: { program: OrganizationProgram }) {
 }
 
 export function ProgramDetail() {
-  const { id = '' } = useParams(); const [program, setProgram] = useState<OrganizationProgram | null>(null); const [error, setError] = useState('');
+  // App mounts this page outside <Routes>, so useParams() is empty there; read the id from the URL as well.
+  const params = useParams(); const { pathname } = useLocation(); const id = params.id ?? pathname.match(/\/programs\/(\d+)/)?.[1] ?? ''; const [program, setProgram] = useState<OrganizationProgram | null>(null); const [error, setError] = useState('');
   const saved = useFavoriteIds('program', [id]); const me = useMemo(currentUser, []);
   useEffect(() => { setProgram(null); setError(''); window.scrollTo({ top: 0 }); api.program(id).then(setProgram).catch((e) => setError(apiError(e, 'This program is no longer available.'))); }, [id]);
   if (error) return <section className="program-detail empty"><h2>Program unavailable</h2><p>{error}</p><Link className="primary compact" to="/programs">Back to programs</Link></section>;

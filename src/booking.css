@@ -96,3 +96,6 @@
 .esim-plan .plan-source.airalo_api{color:#13866a;font-weight:700}
 .esim-plan a{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:800}
 @media(max-width:700px){.home-airport-prompt{grid-template-columns:1fr}.esim-plan{grid-template-columns:1fr 1fr}.esim-plan.head{display:none}}
+
+.swap-route{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:none;padding:0;font-weight:700}
+.flight-form.standalone-flight-form{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.standalone-flight-form .airport-picker{grid-column:span 2;min-width:0}@media(max-width:560px){.standalone-flight-form .airport-picker{grid-column:1/-1}}

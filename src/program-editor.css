@@ -29,3 +29,4 @@
 .editor-actions{display:flex;gap:10px;align-items:center}
 .spin{animation:program-spin 1s linear infinite}@keyframes program-spin{to{transform:rotate(360deg)}}
 @media(max-width:720px){.program-editor .three,.program-editor .four{grid-template-columns:1fr 1fr}}
+.program-editor label{min-width:0}.program-editor input,.program-editor select,.program-editor textarea{width:100%;min-width:0;max-width:100%;box-sizing:border-box}.program-editor .org-check input{width:auto}

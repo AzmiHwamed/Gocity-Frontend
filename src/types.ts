@@ -61,8 +61,15 @@ export interface FavoritePage { items: Favorite[]; counts: FavoriteCounts; page:
 // ── Expenses ──
 export type ExpenseCategory = 'hotel' | 'activity' | 'transport' | 'food' | 'shopping' | 'other';
 export interface Expense { id: number; tripId: number; title: string; amount: number; currency: string | null; category: ExpenseCategory; date: string | null; notes: string | null; paidById: number | null; paidBy?: User | null; isHotelStay: boolean }
-export interface ExpenseSummary { total: number; perPerson: number; travelersCount: number; activitiesTotal: number; expensesTotal: number; budgetTotal: number | null; remainingBudget: number | null; byCategory: { category: ExpenseCategory; total: number }[]; byPayer: { userId: number | null; name: string; total: number }[]; currencies: string[] }
+export interface ExpenseSummary { total: number; perPerson: number; travelersCount: number; activitiesTotal: number; expensesTotal: number; budgetTotal: number | null; remainingBudget: number | null; byCategory: { category: ExpenseCategory; total: number }[]; byPayer: { userId: number | null; name: string; total: number }[]; currencies: string[]; currency?: string; otherCurrencies?: { currency: string; total: number }[] }
 
 /** The API sends `myRole`; older code used `role`. */
 export const roleOf = (trip: Trip): Role | undefined => trip.myRole ?? trip.role;
 export const canEdit = (trip: Trip) => roleOf(trip) === 'owner' || roleOf(trip) === 'editor';
+
+export interface Paged<T> { items: T[]; meta: { page: number; limit: number; total: number; totalPages: number } }
+export interface AdminOverview { users: number; travellers: number; agencies: number; admins: number; trips: number; publicTrips: number; disabledUsers?: number; newUsers30d?: number; newTrips30d?: number; linkTrips?: number }
+export interface AdminEsimPlan { id: number; countryCode: string; provider: string; title: string; dataMb: number | null; isUnlimited: boolean; validityDays: number; price: number; currency: string; url: string; notes: string | null; isActive: boolean; createdAt?: string; updatedAt?: string }
+export interface User { createdAt?: string }
+export interface Trip { createdAt?: string }
+export interface Trip { currency?: string }
