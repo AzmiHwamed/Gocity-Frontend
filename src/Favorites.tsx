@@ -4,6 +4,7 @@ import { BedDouble, ChevronRight, Compass, ExternalLink, Footprints, Heart, MapP
 import { api, apiError, assetUrl } from './api';
 import type { Favorite, FavoriteCounts, FavoriteType } from './types';
 import './favorites.css';
+import { CardSkeletons } from './Loading';
 
 type Tab = FavoriteType | 'all';
 const TABS: { key: Tab; label: string; icon: LucideIcon }[] = [
@@ -92,7 +93,7 @@ export function FavoritesPage() {
     <div className="topline"><div><p className="eyebrow">SAVED FOR LATER</p><h1>Favorites</h1><p className="muted">Trips, activities, hotels and places you want to come back to.</p></div><Link className="primary compact" to="/discover"><Compass size={17}/> Discover more</Link></div>
     <div className="fav-tabs" role="tablist">{TABS.map(({ key, label, icon: Icon }) => <button key={key} role="tab" aria-selected={tab === key} className={tab === key ? 'active' : ''} onClick={() => setTab(key)}><Icon size={15}/> {label}<b>{counts[key]}</b></button>)}</div>
     {error && <p className="error">{error}</p>}
-    {loading && !items.length ? <p className="muted">Loading your favorites…</p> : items.length ? <>
+    {loading && !items.length ? <CardSkeletons count={6} label="Loading your favorites"/> : items.length ? <>
       <div className="fav-grid">{items.map((f) => <FavoriteCard key={f.id} favorite={f} onRemove={() => remove(f)}/>)}</div>
       {items.length < total && <button className="add-empty load-more" disabled={loading} onClick={() => load(tab, page + 1)}>{loading ? 'Loading…' : 'Show more'}</button>}
     </> : <section className="empty"><div className="empty-icon"><current.icon/></div><h2>{tab === 'all' ? 'Nothing saved yet.' : `No ${current.label.toLowerCase()} saved yet.`}</h2><p>Tap the heart on a trip, an activity, a hotel or a city to keep it here.</p><Link className="primary compact" to="/discover">Explore experiences</Link></section>}

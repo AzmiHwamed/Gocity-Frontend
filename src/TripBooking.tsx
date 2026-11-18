@@ -4,6 +4,7 @@ import { api, apiError, assetUrl } from './api';
 import { PhotoCarousel } from './PhotoCarousel';
 import type { EsimList, FlightOffer, FlightPlace, FlightPrices, Traveller, Trip, TripBooking as TripBookingInfo, TripFlights } from './types';
 import './booking.css';
+import { BlockSkeleton } from './Loading';
 
 const money = (amount: number, currency: string) => new Intl.NumberFormat('en', { style: 'currency', currency, maximumFractionDigits: amount % 1 ? 2 : 0 }).format(amount);
 const time = (iso: string) => iso.slice(11, 16);
@@ -42,7 +43,7 @@ export function TripBooking({ trip }: { trip: Trip }) {
   };
 
   if (error) return <section className="booking-panel"><p className="muted">{error}</p></section>;
-  if (!info) return <section className="booking-panel"><p className="muted"><Loader2 size={14} className="spin"/> Loading booking ideas…</p></section>;
+  if (!info) return <section className="booking-panel"><BlockSkeleton height={260} label="Loading booking ideas…"/></section>;
   const photos = result?.destinationPhotos.length ? result.destinationPhotos : info.photos;
 
   return <section className="booking-panel">

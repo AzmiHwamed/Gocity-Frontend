@@ -7,6 +7,7 @@ import { ProgramCard, organizationName, programPrice, programStops } from './Org
 import type { OrganizationProgram, Trip, User } from './types';
 import './program-detail.css';
 import './program-cards.css';
+import { InlineLoader } from './Loading';
 
 const currentUser = (): User | null => { try { return JSON.parse(localStorage.getItem('gocity_user') || 'null'); } catch { return null; } };
 const label = (value?: string | null) => (value ? value[0].toUpperCase() + value.slice(1) : '');
@@ -35,7 +36,7 @@ function AddToPlan({ program }: { program: OrganizationProgram }) {
   const trip = trips?.find((t) => String(t.id) === tripId); const lastStartDay = trip ? Math.max(1, trip.durationDays - program.durationDays + 1) : 1;
   const apply = async () => { setBusy(true); setMessage(null); try { const created = await api.applyProgram(program.id, Number(tripId), day, program.programType === 'activity' ? start || undefined : undefined, program.programType === 'activity' ? end || undefined : undefined); setMessage({ ok: true, text: `${created.length} item${created.length === 1 ? '' : 's'} added to ${trip?.name ?? 'your trip'}.` }); } catch (e) { setMessage({ ok: false, text: apiError(e) }); } finally { setBusy(false); } };
   return <div className="add-to-plan"><p className="eyebrow">ADD TO YOUR TRIP</p>
-    {trips === null ? <p className="muted">Loading your trips…</p> : !trips.length ? <p className="muted">Create a trip first, then come back to add this program. <Link to="/create">Create a trip</Link></p> : <>
+    {trips === null ? <InlineLoader label="Loading your trips…"/> : !trips.length ? <p className="muted">Create a trip first, then come back to add this program. <Link to="/create">Create a trip</Link></p> : <>
       <label>Trip<select value={tripId} onChange={(e) => { setTripId(e.target.value); setDay(1); }}><option value="">Choose one of your trips…</option>{trips.map((t) => <option key={t.id} value={t.id}>{t.name} · {t.startDate}</option>)}</select></label>
       {trip && <label>Starting on day<select value={day} onChange={(e) => setDay(Number(e.target.value))}>{Array.from({ length: lastStartDay }, (_, i) => <option key={i + 1} value={i + 1}>Day {i + 1}</option>)}</select></label>}
       {trip && program.programType === 'activity' && <div className="two"><label>Start <small>optional</small><input type="time" value={start} onChange={(e) => setStart(e.target.value)}/></label><label>End <small>optional</small><input type="time" value={end} onChange={(e) => setEnd(e.target.value)}/></label></div>}

@@ -5,6 +5,7 @@ import { api, apiError, assetUrl } from './api';
 import type { Activity, GalleryItem, Trip, User } from './types';
 import { FavoriteButton, useFavoriteIds } from './Favorites';
 import './experience-detail.css';
+import { PageLoader } from './Loading';
 
 type PublicTrip = Trip & { memberCount?: number; spendDifferencePerPerson?: number | null; activities?: Activity[] };
 const money = (amount?: number | null) => new Intl.NumberFormat('en', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(amount || 0);
@@ -41,7 +42,7 @@ export function Experience({ user, embedded = false, fallback }: { user: User | 
 
   const shell = (content: ReactNode) => embedded ? <section className="experience embedded">{content}</section> : <main className="experience"><header><Link className="brand dark" to="/discover"><span>G</span> GoCity</Link><nav>{user ? <Link to="/trips">My trips</Link> : <><Link to="/login">Sign in</Link><Link className="mini-primary" to="/register">Get started</Link></>}</nav></header>{content}</main>;
   if (error && !trip) return shell(<div className="experience-missing"><p className="error">{error}</p><Link className="text-link" to="/discover"><ArrowLeft size={15}/> Back to Discover</Link></div>);
-  if (!trip) return shell(<p className="muted experience-loading">Loading experience…</p>);
+  if (!trip) return shell(<PageLoader label="Loading experience…"/>);
 
   const place = [trip.city, trip.country].filter(Boolean).join(', ');
   const activities = [...(trip.activities || [])].sort((a, b) => a.dayNumber - b.dayNumber || a.startTime.localeCompare(b.startTime));
@@ -58,7 +59,7 @@ export function Experience({ user, embedded = false, fallback }: { user: User | 
 
   return shell(<>
     {embedded && <button className="experience-back" onClick={() => (window.history.length > 1 ? nav(-1) : nav('/discover'))}><ArrowLeft size={15}/> Back</button>}
-    <div className="experience-cover" style={{ backgroundImage: `linear-gradient(90deg, rgba(15,27,38,.72), rgba(15,27,38,.1)), url(${assetUrl(trip.coverUrl)})` }}><div><p className="eyebrow">COMMUNITY EXPERIENCE{trip.owner ? ` · BY ${trip.owner.firstName.toUpperCase()} ${trip.owner.lastName.toUpperCase()}` : ''}</p><h1>{trip.name}</h1><p><MapPin size={16}/> {place || trip.hotelName || 'A traveller’s route'}{favorites && trip.cityPlaceId && <FavoriteButton className="fav-inline fav-on-dark" type="place" targetId={trip.cityPlaceId} title={trip.city || place} initial={placeFavs.has(trip.cityPlaceId)}/>} &nbsp; <Clock3 size={16}/> {trip.durationDays} days{media ? <> &nbsp; <Images size={16}/> {media} photo{media === 1 ? '' : 's'}</> : null}</p></div></div>
+    <div className="experience-cover" style={{ backgroundImage: trip.coverUrl ? `linear-gradient(90deg, rgba(15,27,38,.72), rgba(15,27,38,.1)), url(${assetUrl(trip.coverUrl)})` : 'radial-gradient(circle at 85% 20%, rgba(255,255,255,.18), transparent 40%), linear-gradient(120deg, #0f3d57 0%, #0d7891 55%, #0cb8c0 100%)' }}><div><p className="eyebrow">COMMUNITY EXPERIENCE{trip.owner ? ` · BY ${trip.owner.firstName.toUpperCase()} ${trip.owner.lastName.toUpperCase()}` : ''}</p><h1>{trip.name}</h1><p><MapPin size={16}/> {place || trip.hotelName || 'A traveller’s route'}{favorites && trip.cityPlaceId && <FavoriteButton className="fav-inline fav-on-dark" type="place" targetId={trip.cityPlaceId} title={trip.city || place} initial={placeFavs.has(trip.cityPlaceId)}/>} &nbsp; <Clock3 size={16}/> {trip.durationDays} days{media ? <> &nbsp; <Images size={16}/> {media} photo{media === 1 ? '' : 's'}</> : null}</p></div></div>
 
     <section className="experience-body">
       <article>

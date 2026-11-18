@@ -7,6 +7,7 @@ import { api, apiError } from './api';
 import { canEdit, type Activity, type DayRoute, type RouteLeg, type RouteStop, type Trip } from './types';
 import { directions, distance, duration, legPath, offlineRoute, stopPoint, type LatLng } from './tripRoute';
 import './trip-route.css';
+import { BlockSkeleton } from './Loading';
 
 // Browser key: restrict it to your site's URLs and to the Maps JavaScript API only.
 // The server's Google key must never be used here.
@@ -44,7 +45,7 @@ export function TripRoute() {
   }, [requestedActivity, shown]);
 
   if (error) return <p className="error">{error}</p>;
-  if (!trip) return <p className="muted">Loading your route…</p>;
+  if (!trip) return <BlockSkeleton height={360} label="Loading your route…"/>;
   const activityCount = shown?.stops.filter((s) => s.kind === 'activity').length ?? 0;
   const hotelLocated = trip.hotelLatitude != null && trip.hotelLongitude != null;
 

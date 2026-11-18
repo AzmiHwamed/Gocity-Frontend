@@ -5,6 +5,7 @@ import { api, apiError } from './api';
 import { Markdown, headingsOf } from './Markdown';
 import type { LegalDocument, LegalKind, LegalStatus, LegalVersion, User } from './types';
 import './legal.css';
+import { TextSkeleton } from './Loading';
 
 const nice = (date: string) => new Date(`${date}T00:00:00`).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
 const OTHER: Record<LegalKind, { to: string; label: string }> = { 'privacy-policy': { to: '/terms', label: 'Terms of Use' }, terms: { to: '/privacy', label: 'Privacy Policy' } };
@@ -20,7 +21,7 @@ export function LegalPage({ kind, user }: { kind: LegalKind; user: User | null }
   return <main className="legal-page">
     <header><Link className="brand dark" to={user ? '/trips' : '/discover'}><span>G</span> GoCity</Link><nav><Link to={OTHER[kind].to}>{OTHER[kind].label}</Link>{user ? <Link to="/trips">My trips</Link> : <Link className="mini-primary" to="/register">Get started</Link>}</nav></header>
     {error && !doc ? <div className="legal-missing"><p className="error">{error}</p><Link className="text-link" to="/discover"><ArrowLeft size={15}/> Back to GoCity</Link></div>
-      : !doc ? <p className="muted legal-loading">Loading…</p>
+      : !doc ? <TextSkeleton lines={12} label="Loading document"/>
       : <div className="legal-layout" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
         <aside className="legal-toc"><p className="eyebrow">ON THIS PAGE</p><ol>{toc.map((h) => <li key={h.id}><a href={`#${h.id}`}>{h.text}</a></li>)}</ol></aside>
         <article>

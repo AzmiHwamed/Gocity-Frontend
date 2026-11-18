@@ -3,6 +3,7 @@ import { AlertCircle, ArrowLeft, ArrowRight, Film, GripVertical, ImagePlus, Load
 import { api, apiError, assetUrl } from './api';
 import type { GalleryItem } from './types';
 import './media-gallery.css';
+import { CardSkeletons } from './Loading';
 
 /** Same limits as the backend (MAX_FILE_SIZE_MB, MAX_TRIP_IMAGES, allowed types). */
 export const MEDIA_LIMITS = { maxFileMb: 5, maxItems: 30, concurrency: 3 };
@@ -85,7 +86,7 @@ export function TripMediaManager({ tripId, editable = true, canDeleteAny = true,
   const remove = async (item: GalleryItem) => { if (!window.confirm(`Delete this ${isVideo(item.mimeType) ? 'video' : 'photo'} from the trip?`)) return; try { await api.deleteGalleryItem(tripId, item.id); setItems((list) => list.filter((m) => m.id !== item.id)); if (coverId === item.id) setCoverId(null); flash('Deleted.'); } catch (e) { setError(apiError(e, 'Unable to delete it.')); } };
   const mayDelete = (item: GalleryItem) => editable && (canDeleteAny || item.ownerId === myUserId);
 
-  if (loading) return <p className="muted"><Loader2 size={15} className="spin"/> Loading media…</p>;
+  if (loading) return <CardSkeletons count={4} label="Loading media"/>;
   return <div className="media-manager">
     {editable && <div className={`dropzone${dragOver ? ' over' : ''}${slotsLeft <= 0 ? ' full' : ''}`} onDragOver={(e) => { e.preventDefault(); if (dragId === null) setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={onDrop} onClick={() => slotsLeft > 0 && input.current?.click()} role="button" tabIndex={0} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && slotsLeft > 0) { e.preventDefault(); input.current?.click(); } }}>
       <UploadCloud size={26}/><b>{slotsLeft > 0 ? 'Drop photos & videos here, or click to choose' : 'The gallery is full'}</b>

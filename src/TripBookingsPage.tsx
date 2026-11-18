@@ -4,6 +4,7 @@ import { ChevronLeft } from 'lucide-react';
 import { api, apiError } from './api';
 import { TripBooking } from './TripBooking';
 import type { Trip } from './types';
+import { PageLoader } from './Loading';
 
 /** A dedicated booking workspace, linked from an individual trip. */
 export function TripBookingsPage() {
@@ -18,7 +19,7 @@ export function TripBookingsPage() {
   }, [id]);
 
   if (error) return <p className="error">{error}</p>;
-  if (!trip) return <p className="muted">Loading booking workspace…</p>;
+  if (!trip) return <PageLoader label="Loading booking workspace…"/>;
   return <section className="booking-page">
     <Link className="text-link" to={`/trips/${trip.id}`}><ChevronLeft size={16}/> Back to {trip.name}</Link>
     <TripBooking trip={trip} />

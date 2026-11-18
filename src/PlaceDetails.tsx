@@ -4,6 +4,7 @@ import { api, apiError } from './api';
 import { PhotoCarousel } from './PhotoCarousel';
 import type { PlaceDetails as Details } from './types';
 import './place-details.css';
+import { InlineLoader } from './Loading';
 
 const PRICE = ['Free', '€', '€€', '€€€', '€€€€'];
 const longDate = (date: string) => new Date(`${date}T00:00:00`).toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'short' });
@@ -24,7 +25,7 @@ export function PlaceDetailsCard({ placeId, date, compact = false }: { placeId: 
   const [d, setD] = useState<Details | null>(null); const [error, setError] = useState('');
   useEffect(() => { setD(null); setError(''); api.placeDetails(placeId, date).then(setD).catch((e) => setError(apiError(e, 'Details are unavailable right now.'))); }, [placeId, date]);
   if (error) return <div className={`place-details${compact ? ' compact' : ''}`}><p className="muted">{error}</p></div>;
-  if (!d) return <div className={`place-details${compact ? ' compact' : ''}`}><p className="muted"><Loader2 size={14} className="spin"/> Loading details…</p></div>;
+  if (!d) return <div className={`place-details${compact ? ' compact' : ''}`}><InlineLoader label="Loading details…"/></div>;
   const review = d.reviews.find((r) => r.text);
   return <div className={`place-details${compact ? ' compact' : ''}`}>
     {d.photos.length > 0 && <PhotoCarousel photos={d.photos} title={d.name} className="small"/>}
