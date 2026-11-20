@@ -1,11 +1,22 @@
 import axios from 'axios';
 import type { AdminEsimPlan, AdminOverview, Paged, AppNotification, AuthResult, CitySuggestion, DayRoute, Envelope, EsimList, Expense, ExpenseSummary, Favorite, FlightPlace, FlightPrices, TripBooking, TripFlights, PlaceDetails, FavoritePage, FavoriteType, GalleryItem, HotelPage, LegalDocument, LegalKind, LegalStatus, LegalVersion, PlaceResult, Interest, OrganizationAnalytics, OrganizationProgram, Trip, TripMessage, User } from './types';
+import { showToast } from './ToastHost';
 
 // .env.example names it VITE_API_BASE_URL; accept both.
 const client = axios.create({ baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1' });
 /** Backend paths like /api/v1/places/photo?… need the API's origin when the app runs on another port. */
 export const assetUrl = (path?: string | null) => (path ? new URL(path, client.defaults.baseURL).toString() : '');
 const token = () => localStorage.getItem('gocity_access_token');
+const messageFromError = (error: unknown, fallback = 'Something went wrong. Please try again.') => {
+  const candidate = error as { code?: string; response?: { status?: number; data?: Partial<Envelope<unknown>> & { message?: string | string[] } }; message?: string };
+  const message = candidate.response?.data?.response_error ?? candidate.response?.data?.message ?? candidate.message;
+  if (!candidate.response && (candidate.code === 'ERR_NETWORK' || candidate.message === 'Network Error')) return 'Unable to reach GoCity. Check your connection and try again.';
+  if (candidate.response?.status === 429) return 'Too many requests. Please wait a moment and try again.';
+  if (candidate.response?.status && candidate.response.status >= 500) return 'GoCity is temporarily unavailable. Please try again shortly.';
+  if (candidate.response?.status === 403) return 'You do not have permission to do that.';
+  if (candidate.response?.status === 404) return 'We could not find what you were looking for.';
+  return Array.isArray(message) ? message.join('; ') : message || fallback;
+};
 client.interceptors.request.use((config) => { if (token()) config.headers.Authorization = `Bearer ${token()}`; return config; });
 client.interceptors.response.use(
   (response) => response,
@@ -18,6 +29,7 @@ client.interceptors.response.use(
         saveSession(data.response_body); request.headers.Authorization = `Bearer ${data.response_body.accessToken}`; return client(request);
       } catch { clearSession(); }
     }
+    if (!request?.suppressToast) showToast(messageFromError(error), 'error');
     return Promise.reject(error);
   },
 );
@@ -29,16 +41,7 @@ const body = <T>(p: Promise<{ data: Envelope<T> | T }>) => p.then((r) => {
   if (payload && typeof payload === 'object' && 'response_body' in payload) return payload.response_body as T;
   return r.data as T;
 });
-export const apiError = (error: unknown, fallback = 'Something went wrong. Please try again.') => {
-  const candidate = error as { code?: string; response?: { status?: number; data?: Partial<Envelope<unknown>> & { message?: string | string[] } }; message?: string };
-  const message = candidate.response?.data?.response_error ?? candidate.response?.data?.message ?? candidate.message;
-  if (!candidate.response && (candidate.code === 'ERR_NETWORK' || candidate.message === 'Network Error')) return 'Unable to reach GoCity. Check your connection and try again.';
-  if (candidate.response?.status === 429) return 'Too many requests. Please wait a moment and try again.';
-  if (candidate.response?.status && candidate.response.status >= 500) return 'GoCity is temporarily unavailable. Please try again shortly.';
-  if (candidate.response?.status === 403) return 'You do not have permission to do that.';
-  if (candidate.response?.status === 404) return 'We could not find what you were looking for.';
-  return Array.isArray(message) ? message.join('; ') : message || fallback;
-};
+export const apiError = (error: unknown, fallback = 'Something went wrong. Please try again.') => messageFromError(error, fallback);
 export const api = {
   login: (email: string, password: string, acceptTerms = false) => body<AuthResult>(client.post('/auth/login', { email, password, acceptTerms })),
   oauthLogin: (provider: 'google' | 'facebook', firebaseIdToken: string, acceptTerms = false) => body<AuthResult>(client.post('/auth/oauth/login', { provider, firebaseIdToken, acceptTerms })),

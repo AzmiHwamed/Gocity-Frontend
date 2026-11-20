@@ -15,8 +15,9 @@ import { CityPicker } from './CityPicker';
 import { useCitySuggestions } from './useCitySuggestions';
 import { TripHotelEditor } from './TripHotelEditor';
 import { InviteJoin, Notifications, Profile, Splash, Welcome } from './FlowScreens';
+import { subscribeToNotifications } from './realtime';
 
-function TopBar({ user }: { user: User }) { return <header className="app-topbar"><div><span>Good to see you</span><strong>{user.firstName}</strong></div><Link className="app-topbar-profile" to="/profile"><span>{user.avatar?.url ? <img src={assetUrl(user.avatar.url)} alt="" /> : <>{user.firstName?.[0]}{user.lastName?.[0]}</>}</span><b>My profile</b></Link></header> }
+function TopBar({ user }: { user: User }) { const [unread, setUnread] = useState(0); useEffect(() => { const load = () => api.notifications().then((items) => setUnread(items.filter((item: any) => !item.readAt).length)).catch(() => undefined); load(); const stop = subscribeToNotifications((item) => { if (!item.readAt) setUnread((count) => count + 1); }); window.addEventListener('gocity:notifications-changed', load); return () => { stop(); window.removeEventListener('gocity:notifications-changed', load); }; }, []); return <header className="app-topbar"><div><span>Good to see you</span><strong>{user.firstName}</strong></div><div className="app-topbar-actions"><Link className="app-topbar-notifications" to="/notifications" aria-label={unread ? `${unread} unread notifications` : 'Notifications'}><Bell size={19}/>{unread > 0 && <b>{unread > 99 ? '99+' : unread}</b>}</Link><Link className="app-topbar-profile" to="/profile"><span>{user.avatar?.url ? <img src={assetUrl(user.avatar.url)} alt="" /> : <>{user.firstName?.[0]}{user.lastName?.[0]}</>}</span><b>My profile</b></Link></div></header> }
 import { DepartureChecklist, ReceiptExpense } from './TripExtras';
 import { TripRoute } from './TripRouteMap';
 import { PlacePicker, placeFields } from './PlacePicker';
@@ -142,8 +143,8 @@ function Community() { return <section className="community-page"><div className
 
 function CreateTrip() {
   const nav = useNavigate();
-  const [step, setStep] = useState(1);
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const [cityPlaceId, setCityPlaceId] = useState('');
   const [city, setCity] = useState('');
   const [name, setName] = useState('');
@@ -151,31 +152,23 @@ function CreateTrip() {
   const [endDate, setEndDate] = useState('');
   const [travelersCount, setTravelersCount] = useState(2);
   const [budget, setBudget] = useState('');
-  const [interests, setInterests] = useState<string[]>(['Food spots']);
-  const toggleInterest = (interest: string) => setInterests((current) => current.includes(interest) ? current.filter((item) => item !== interest) : [...current, interest]);
-  const advance = () => {
-    if (step === 1 && (!name.trim() || !cityPlaceId || !startDate || !endDate)) return setError('Add a name, choose a city from the list, and select your dates.');
-    if (step === 1 && endDate < startDate) return setError('Your end date must be on or after your start date.');
-    setError(''); setStep((current) => current + 1);
-  };
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); setError('');
+    if (!name.trim() || !cityPlaceId || !startDate || !endDate) return setError('Add a name, choose a city from the list, and select your dates.');
+    if (endDate < startDate) return setError('Your end date must be on or after your start date.');
     const form = new FormData(event.currentTarget);
+    setBusy(true);
     try {
       const trip = await api.createTrip({ name: name.trim(), startDate, endDate, travelersCount, budgetPerPerson: Number(budget) || undefined, hotelName: form.get('hotelName') || undefined, hotelLatitude: form.get('hotelLatitude') ? Number(form.get('hotelLatitude')) : undefined, hotelLongitude: form.get('hotelLongitude') ? Number(form.get('hotelLongitude')) : undefined, cityPlaceId, city });
       nav(`/trips/${trip.id}`);
-    } catch (err: any) { setError(err.response?.data?.response_error || 'We could not create that trip.'); }
+    } catch (err: any) { setError(err.response?.data?.response_error || 'We could not create that trip.'); } finally { setBusy(false); }
   };
-  const selectedSummary = interests.length ? interests.join(' · ') : 'A little of everything';
   return <section className="create-flow">
-    <header className="create-flow-header"><button type="button" onClick={() => step === 1 ? nav(-1) : setStep((current) => current - 1)} aria-label="Go back">‹</button><Link className="create-flow-brand" to="/trips"><b>Go</b>City</Link><small>Step {step} of 3</small></header>
-    <div className="create-flow-progress"><i className={step >= 1 ? 'done' : ''}/><i className={step >= 2 ? 'done' : ''}/><i className={step >= 3 ? 'done' : ''}/></div>
+    <header className="create-flow-header"><button type="button" onClick={() => nav(-1)} aria-label="Go back">‹</button><Link className="create-flow-brand" to="/trips"><b>Go</b>City</Link><small>NEW TRIP</small></header>
     <form onSubmit={submit}>
-      {step === 1 && <div className="create-flow-panel"><p className="eyebrow">TRIP PERSONALITY</p><h1>Make room for what you love</h1><p>Start with the practical details. We’ll make the rest feel like yours.</p><label>Trip name<input value={name} onChange={(event) => setName(event.target.value)} placeholder="Our Lisbon trip" autoFocus /></label><CityPicker label="Where are you going?" required onSelect={(selected) => { setCityPlaceId(selected?.placeId || ''); setCity(selected?.name || ''); }} /><div className="create-flow-two"><label>Start date<input value={startDate} onChange={(event) => setStartDate(event.target.value)} type="date" /></label><label>End date<input value={endDate} onChange={(event) => setEndDate(event.target.value)} min={startDate || undefined} type="date" /></label></div><label>Who’s coming?<input value={travelersCount} onChange={(event) => setTravelersCount(Math.max(1, Number(event.target.value) || 1))} type="number" min="1" /></label></div>}
-      {step === 2 && <div className="create-flow-panel"><p className="eyebrow">MAKE IT YOURS</p><h1>What belongs on the plan?</h1><p>Pick a few ideas. You can edit every detail once your trip is created.</p><div className="create-choice-grid">{['Food spots', 'Culture', 'Nature', 'Shopping', 'Nightlife', 'Wellness'].map((interest) => <button type="button" className={interests.includes(interest) ? 'selected' : ''} key={interest} onClick={() => toggleInterest(interest)}>{interest}</button>)}</div><label>Budget per person <small>(optional)</small><div className="create-budget"><span>€</span><input value={budget} onChange={(event) => setBudget(event.target.value)} inputMode="decimal" type="number" min="0" placeholder="500" /></div></label><div className="create-flow-summary"><b>{name || 'Your trip'}</b><span>{city || 'Destination'} · {selectedSummary}</span></div></div>}
-      {step === 3 && <div className="create-flow-panel"><p className="eyebrow">ONE LAST DETAIL</p><h1>Give your trip a starting point</h1><p>A hotel is optional now. Add one to get better routes and booking suggestions.</p><HotelPicker cityPlaceId={cityPlaceId} /><div className="create-ready"><Check size={18}/><div><b>Your programme is ready to begin</b><span>Invite people, add ideas and shape each day after you create it.</span></div></div></div>}
+      <div className="create-flow-panel"><p className="eyebrow">PLAN A TRIP</p><h1>Set up your next escape</h1><p>Add the essentials now. You can invite people and shape each day after creating it.</p><label>Trip name<input value={name} onChange={(event) => setName(event.target.value)} placeholder="Our Lisbon trip" autoFocus required /></label><CityPicker label="Where are you going?" required onSelect={(selected) => { setCityPlaceId(selected?.placeId || ''); setCity(selected?.name || ''); }} /><div className="create-flow-two"><label>Start date<input value={startDate} onChange={(event) => setStartDate(event.target.value)} type="date" required /></label><label>End date<input value={endDate} onChange={(event) => setEndDate(event.target.value)} min={startDate || undefined} type="date" required /></label></div><label>Who’s coming?<input value={travelersCount} onChange={(event) => setTravelersCount(Math.max(1, Number(event.target.value) || 1))} type="number" min="1" required /></label><label>Budget per person <small>(optional)</small><div className="create-budget"><span>€</span><input value={budget} onChange={(event) => setBudget(event.target.value)} inputMode="decimal" type="number" min="0" placeholder="500" /></div></label><div className="create-flow-hotel"><p className="eyebrow">OPTIONAL STARTING POINT</p><b>Add your hotel</b><span>Useful for routes and booking suggestions. You can skip it.</span><HotelPicker cityPlaceId={cityPlaceId} /></div><div className="create-ready"><Check size={18}/><div><b>Your programme is ready to begin</b><span>Invite people, add ideas and shape each day after you create it.</span></div></div></div>
       {error && <p className="create-flow-error">{error}</p>}
-      <footer className="create-flow-footer">{step < 3 ? <button type="button" className="create-flow-next" onClick={advance}>Continue <ChevronRight size={17}/></button> : <button className="create-flow-next">Build my programme <ChevronRight size={17}/></button>}{step < 3 && <button type="button" className="create-flow-skip" onClick={() => setStep((current) => current + 1)}>Skip for now</button>}</footer>
+      <footer className="create-flow-footer"><button className="create-flow-next" disabled={busy}>{busy ? 'Creating your trip…' : 'Build my programme'} <ChevronRight size={17}/></button></footer>
     </form>
   </section>;
 }

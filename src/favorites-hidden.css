@@ -1,0 +1,2 @@
+/* Favorites remain available in the backend, but are intentionally not exposed in the web UI. */
+a[href="/saved"],a[href="/favorites"],.fav-wrap{display:none!important}
