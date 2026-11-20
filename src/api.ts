@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AdminEsimPlan, AdminOverview, Paged, AppNotification, AuthResult, CitySuggestion, DayRoute, Envelope, EsimList, Expense, ExpenseSummary, Favorite, FlightPlace, FlightPrices, TripBooking, TripFlights, PlaceDetails, FavoritePage, FavoriteType, GalleryItem, HotelPage, LegalDocument, LegalKind, LegalStatus, LegalVersion, PlaceResult, Interest, OrganizationAnalytics, OrganizationProgram, Trip, TripMessage, User } from './types';
+import type { Activity, AdminEsimPlan, AdminOverview, Paged, AppNotification, AuthResult, CitySuggestion, DayRoute, Envelope, EsimList, Expense, ExpenseSummary, Favorite, FlightPlace, FlightPrices, TripBooking, TripFlights, PlaceDetails, FavoritePage, FavoriteType, GalleryItem, HotelPage, LegalDocument, LegalKind, LegalStatus, LegalVersion, PlaceResult, Interest, OrganizationAnalytics, OrganizationProgram, Trip, TripMessage, User } from './types';
 import { showToast } from './ToastHost';
 
 // .env.example names it VITE_API_BASE_URL; accept both.
@@ -123,6 +123,8 @@ export const api = {
   createTrip: (input: Record<string, unknown>) => body<Trip>(client.post('/trips', input)),
   updateTrip: (id: string, input: Record<string, unknown>) => body<Trip>(client.patch(`/trips/${id}`, input)),
   copyTrip: (id: string) => body<Trip>(client.post(`/trips/${id}/copy`, {})),
+  previewTripImport: (sourceTripId: string, targetTripId: number) => body<{ conflicts: Activity[] }>(client.post(`/trips/${sourceTripId}/activities/import/preview`, { targetTripId })),
+  importTripActivities: (sourceTripId: string, targetTripId: number, fixes: { sourceActivityId: number; dayNumber: number; startTime: string; endTime: string }[]) => body<Activity[]>(client.post(`/trips/${sourceTripId}/activities/import`, { targetTripId, fixes })),
   activities: (tripId: string) => body<any>(client.get(`/trips/${tripId}/activities`)),
   addActivity: (tripId: string, input: Record<string, unknown>) => body<any>(client.post(`/trips/${tripId}/activities`, input)),
   updateActivity: (tripId: string, activityId: number, input: Record<string, unknown>) => body<any>(client.patch(`/trips/${tripId}/activities/${activityId}`, input)),
